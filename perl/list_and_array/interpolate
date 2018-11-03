@@ -1,0 +1,67 @@
+#!/usr/bin/perl -w
+@rocks = qw{flintstone slate rubble};
+print "quartz @rocks linestone\n";
+print "three rocks are:@rocks.\n";
+print "there is nothing in the parens (@empty) here \n";
+print "\n";
+@fred = qw(hello holly);
+$y = "2*4";
+$x = "This is $fred[1]'s place";
+print "this is $fred[$y-1]'s place\n";
+print "\n\n";
+@fred = qw(eating rocks is wrong);
+$fred = "right";
+print "this is $fred[3]\n";
+print "this is ${fred}[3]\n";
+print "this is $fred"."[3]\n";
+print "this is $fred\[3]\n";
+
+print "\n\n";
+@rocks = qw(bedrock slate lava);
+$rock = "test";
+
+foreach $rock (@rocks){
+	$rock = "\t$rock";
+	$rock .= "\n";
+}
+
+print "the rocks are",@rocks;
+
+foreach (1..20){
+	print "i can count to $_!\n";
+}
+$_ = "yabbsdlfk sdlfkjsdkj\n";
+print ;
+
+@rocks = qw(bedrock slate rubble granite);
+@sorted = sort(@rocks);
+@back = reverse sort(@rocks);
+
+print "rocks:",@rocks,"\n";
+print "sorted:",@sorted,"\n";
+print "back:",@back,"\n";
+
+@number = sort 97..103;
+print @number;
+print "\n";
+@number = 97..103;
+@number = sort @number;
+print @number;
+print "\n";
+$i = 0;
+foreach (998..1003){
+	$num[$i++] = $_;
+}
+@num = sort @num;
+print @num;
+
+
+print "\n\n";
+@rocks = qw(bedrock slate rubble granite);
+while(($index,$value) = each @rocks){
+	print "$index:$value\n";
+}
+print "use foreach\n";
+foreach (0..$#rocks){
+	print "$_:$rocks[$_]\n";
+}

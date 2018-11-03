@@ -1,0 +1,10 @@
+501	acceleration	[ək.selə'reɪʃ(ə)n]	n.加速度；加快；加速的幅度	All this adds up to unexpectedly rapid cosmic-ray acceleration in a magnetic field amplified by a fa	所有这些因素加在一起，造成在一个被放大了100倍以上的磁场中宇宙射线的加速异乎寻常地快。	
+502	accessory	[əkˈsɛsəri]	n.配件；从犯；饰品；附属品	A young girl takes pride in a prized accessory: Rather than barrettes or purses, she carries with he	一个小女孩以她价值不菲的“家伙”为傲：她举着的既不是发卡也不是钱包，而是一把粉色的枪。	
+503	accordance	[ə'kɔrd(ə)ns]	n.一致；给予	Do not hate it That person, that person is loyal to its own in accordance with the chemical reaction	所以别太恨那个人，那个人只是忠心地按照自身的化学反应而采取行动而已。	
+504	accumulate	 [ə'kjumjə.leɪt]	v.积累；积聚；（数量）逐渐增加；（数额）逐渐增长	As the books began to accumulate, the librarian felt obliged to throw some useless books away, for t	随着书越来越多，图书管理员感到有必要把没用的书扔掉，因为图书馆里的空间不足。	
+505	agony	['æɡəni]	n.（精神或肉体的）极度痛苦	The cat sat in front of the bird cage in an agony of frustration at being so near and yet so far.	猫无可奈何地坐在鸟笼前，眼看着鸟儿近在咫尺，可怎么也够不着。	
+506	alloy	 ['ælɔɪ]	n.合金	Alloy: Metallic substance composed of two or more elements, as either a mixture, compound, or solid 	合金：由两种或多种元素组成的金属材料，以化合物或固溶体形式存在。	
+507	alter	['ɔltər] 	v.更改；修改（衣服使更合身）	That Ruth had little faith in his power as a writer, did not alter her nor diminish her in Martin's 	虽然露丝对马丁当作家的本领缺乏信心，她在马丁眼中却并无变化，也没有被他小看。	
+508	ampere	['æmpɪr] 	n.【电】安培	The two units used most frequently in electricity are ampere and volt. This is the unit of voltage a	电学上最常用的两个单位是安培和伏特，后者是电压单位，前者是电流单位。	
+509	amplify	 ['æmplɪ.faɪ]	v.放大；充实（故事、事情、陈述等）	Yves Behar's Amplify at SCP was even better than I had expected: magical "paper lanterns" cast a sof	在SCP由伊夫贝哈尔的设计的Amplify超出我的想象：神奇的“灯笼”投下了一个公园长凳上柔和光芒。	
+510	anchor	['æŋkər] 	n.锚；给以安全感的人（或物）；精神支柱；顶梁柱	I certainly hope that the three refinements will continue to anchor expectation firmly. This seems t	过去一年，三项优化措施似乎已能稳住市场预期，我当然希望这情况会继续下去。	

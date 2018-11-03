@@ -1,0 +1,7 @@
+#!/usr/bin/perl
+$line = <STDIN>;
+if($line lt 0){
+	print "0\n";
+}else{
+	print 2 * 3.141592654 * $line."\n";
+}

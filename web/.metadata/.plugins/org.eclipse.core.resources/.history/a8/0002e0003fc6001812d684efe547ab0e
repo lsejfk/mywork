@@ -1,0 +1,440 @@
+<?php
+/*Created by Michael Shen
+ *Date:2018-09-09
+ *Time:10:15
+ *Dec:receive data from the html and do actions to mysql
+ */
+include_once '/var/www/html/weipro/tools/config.inc.php';
+include_once '/var/www/html/weipro/tools/tools.inc.php';
+include_once '/var/www/html/weipro/view/receive.class.php';
+include_once '/var/www/html/weipro/module/mysql.class.php';
+
+
+
+class Control{
+    private $modulor;
+    private $receiveobj;
+    
+    public function __construct(){
+        $this->modulor = new Module();
+    }
+    
+    //check if the user login
+    public function is_login($user_id){
+        if(isset($_COOKIE['weipro']['id']) && isset($_COOKIE['weipro']['psw'])){
+            if($user_id == $_COOKIE['weipro']['id']){
+                if($this->modulor->confirm_id_with_psw($user_id)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    //check if the user is manager
+    public function is_menager($user_id){
+        return $this->modulor->isMenager($user_id);
+    }
+    
+    //login
+    public function login_into($user_id,$user_psw){
+        if(!$this->modulor->is_user_exist($user_id)){
+            info_to_user("您尚未注册！","info","去注册","index.php?page=register");
+        }
+        if($this->is_login($user_id)){
+            if($this->is_menager($user_id)){
+                skip("/weipro/manage/menage.php");
+            }else{
+                skip("/weipro/coupon.php");
+            }
+        }
+        if($this->modulor->login($user_id,$user_psw)){
+            setcookie('weipro[id]',$user_id,time()+LOGIN_LIFETIME);
+            setcookie('weipro[psw]',sha1(md5($user_psw)),time()+LOGIN_LIFETIME);
+            if($this->is_menager($user_id)){
+                info_to_user("登录成功！","success","确定","/weipro/manage/menage.php",true);
+            }else{
+                info_to_user("登录成功！","success","确定","/weipro/coupon.php",true);
+            }
+        }else{
+            info_to_user("用户名或密码错误！");
+        }
+    }
+    
+    public function logout($user_id){
+        if($this->modulor->logout($user_id)){
+            setcookie('weipro[id]','',time()-3600);
+            setcookie('weipro[psw]','',time()-3600);
+            skip("index.php");
+        }else{
+            info_to_user("您登录已失效！","info","确定","/weipro/index.php");
+        }
+    }
+    
+    //check if the user exist
+    public function is_user($user_id){
+        return $this->modulor->is_user_exist($user_id);
+    }
+    
+    //check if the coupon of user has been used
+    public function is_used($user_id,$cou_id){
+        return $this->modulor->is_used($user_id,$cou_id);
+    }
+    
+    //check if the coupon of user has disabled
+    public function is_disabled($user_id,$cou_id){
+        return $this->modulor->is_disabled($user_id,$cou_id);
+    }
+    
+    //register
+    public function register_into($data,$back=null){
+        if($this->modulor->is_user_exist($data['id'])){
+            info_to_user("您已经注册！","info","登录","/werpro/index.php?page=login");
+        }
+        if($this->modulor->register($data['id'],$data['psw'],$data['gender'])){
+            if($back != null){
+                info_to_user("注册成功！","success","确定",$back);
+            }else{
+                if($this->modulor->login($data['id'], $data['psw'])){
+                    info_to_user("注册成功！","success","确定","coupon.php");
+                }else{
+                    info_to_user("注册成功，登录操作失败！","info","确定","/weipro/index.php?page=login");
+                }
+            }
+        }else{
+            info_to_user("注册失败，请重试！","info","确定","/weipro/index.php?page=register");
+        }
+    }
+    
+    //create object of Receive class
+    public function creat_rec_object($data,$page,$type){
+        $this->receiveobj = new ReceiveDate($page, $type);
+        $this->receiveobj->get_data_from_form($type, $data);
+    }
+    
+    //submit received data
+    public function submit_rec_data($user_id=null){
+        $data = array();
+        $page = $this->receiveobj->get_data_page();
+        /*
+        title,type,start,days,end,base,discount,info,level,reward_type,reward_id,reward_info
+        title,coupon_type,time_type,detail,submit,cou_level,reward_type,reward_coupon
+        coupon_type       满减（截止） basemoney coupon_money calendertime
+                             (有效期)                       days
+        
+                          折扣(截止） discount calendertime
+                          折扣（有效期)discount days
+                          代金券(截止) cash    calendertime
+                          代金券(有效期)cash    days        
+        */
+
+        if($page == "add_coupon.php"){
+            $data['type'] = (intval($this->receiveobj->get_data("coupon_type")) | intval($this->receiveobj->get_data("time_type")));
+            $data['title'] = $this->receiveobj->get_data("title");
+            $data['info'] = $this->receiveobj->get_data("detail");
+            $data['level'] = $this->receiveobj->get_data("cou_level");
+            $data['cou_times'] = $this->receiveobj->get_data("share_times");
+            $data['reward_type'] = $this->receiveobj->get_data("reward_type");
+            if($data['reward_type'] == "1"){
+                $data['reward_info'] = "";
+                $data['reward_id'] = $this->receiveobj->get_data("reward_coupon");
+            }else if($data['reward_type'] == "2"){  //其它
+                $data['reward_id'] = 0;
+                $data['reward_info'] = $this->receiveobj->get_data("other_reward");
+            }else if($data['reward_type'] == "3"){
+                $data['reward_id'] = 0;
+                $data['reward_info'] = "";
+            }else{
+                info_to_user("奖励类型错误！");
+            }
+            switch ($data['type']){
+                //满减，截止
+                case FULL_SUBTRACTION | DEADTIME :
+                    $data['end'] = $this->receiveobj->get_data("calendertime");
+                    $data['base'] = $this->receiveobj->get_data("basemoney");
+                    $data['discount'] = $this->receiveobj->get_data("coupon_money");
+                    break;
+                case FULL_SUBTRACTION | DAYS:
+                    $data['base'] = $this->receiveobj->get_data("basemoney");
+                    $data['discount'] = $this->receiveobj->get_data("coupon_money");
+                    $data['days'] = $this->receiveobj->get_data("days");
+                    break;
+                case DISCOUNT | DEADTIME:
+                    $data['base'] = 0;
+                    $data['discount'] = $this->receiveobj->get_data("discount");
+                    $data['end'] = $this->receiveobj->get_data("calendertime");
+                    break;
+                case DISCOUNT | DAYS:
+                    $data['base'] = 0;
+                    $data['discount'] = $this->receiveobj->get_data("discount");
+                    $data['days'] = $this->receiveobj->get_data("days");
+                    break;
+                case CASH | DEADTIME:
+                    $data['base'] = $this->receiveobj->get_data("cash");
+                    $data['discount'] = 0;
+                    $data['end'] = $this->receiveobj->get_data("calendertime");
+                    break;
+                case CASH | DAYS :
+                    $data['base'] = $this->receiveobj->get_data("cash");
+                    $data['discount'] = 0;
+                    $data['days'] = $this->receiveobj->get_data("days");
+                    break;
+                default:info_to_user("类型有错误！");
+                    break;
+            }//switch
+            if($this->modulor->submit_data($data,"coupon")){
+                info_to_user("添加成功！","success","确定","/weipro/manage/menage.php",true);
+            }else{
+                info_to_user("添加失败！","info","重试");
+            }
+        }else if($page == "add_car.php"){
+            $data['car_id'] = $this->receiveobj->get_data("car_id");
+            $data['car_type'] = $this->receiveobj->get_data("car_type");
+            $data['car_color'] = $this->receiveobj->get_data("car_color");
+            $data['user_name'] = "";
+            $data['user_id'] = $user_id;
+            if($this->modulor->submit_data($data, "car")){
+                info_to_user("绑定成功！","success","确定");
+            }else{
+                info_to_user("绑定失败！","info","重试");
+            }
+        }
+    }
+    
+    public function init_menage_page($page,$init_cou_id=null,$user_id=null){
+        //titile,cou_id,intro,type,expire_date,list_detail,level,reward
+        //cou_id,cou_title,cou_type,cou_start,cou_days,cou_end,cou_base,cou_discount,cou_info,cou_level,reward_type,reward_id,reward_info
+        $data = array();
+        if($page == "home"){
+            $mysql_result_array = $this->modulor->get_cou_data();
+        }else if($page == "myunuse"){
+            $mysql_result_array = $this->modulor->get_cou_data("myunuse",false,$user_id);
+        }else if($page == "myused"){
+            $mysql_result_array = $this->modulor->get_cou_data("myused",false,$user_id);
+        }else if($page == "mydisabled"){
+            $mysql_result_array = $this->modulor->get_cou_data("mydisabled",false,$user_id);
+        }else if($page == "specify"){
+            $mysql_result_array = $this->modulor->get_cou_data("specify",$init_cou_id);
+        }
+        $num = count($mysql_result_array);
+
+        for ($key=0;$key < $num;$key++){
+            $cou_data = $mysql_result_array[$key];
+
+            if(empty($cou_data)){
+                info_to_user("页面初始化失败，请重试！","info","重试","menage.php");
+            }
+            $data[$key]['title'] = $cou_data['cou_title'];
+            $data[$key]['cou_id'] = $cou_data['cou_id'];
+            //init the user page,get the user's share times
+            if(isset($user_id)){
+                $data[$key]['share_times'] = $this->modulor->get_stimes_of_user($user_id,$cou_data['cou_id']);
+            }else{
+                $data[$key]['share_times'] = $cou_data['cou_times'];
+            }
+            //init the coupon level
+            switch ($cou_data['cou_level']){
+                case 0:
+                    $data[$key]['level'] = "限量优惠券（只能通过分享获取）";
+                    break;
+                case 1:
+                    $data[$key]['level'] = "普通优惠券（普通用户及以上用户可获取）";
+                    break;
+                case 2:
+                    $data[$key]['level'] = "白银优惠券（白银会员用户及以上用户可获取）";
+                    break;
+                case 3:
+                    $data[$key]['level'] = "黄金优惠券（黄金会员用户可获取）";
+                    break;
+                default:$data[$key]['level'] = "无等级";
+            }                
+            
+            $data[$key]['reward'] = "";
+            
+            
+            //init the reward information
+            if($cou_data['reward_type'] == 1){  //优惠券
+                if(!empty($cou_data['reward_id'])){
+                    $reward_cou_data = $this->modulor->get_reward_coupon_info($cou_data['reward_id']);
+                    if(empty($reward_cou_data)){
+                        info_to_user("奖励信息初始化失败！");
+                    }
+    
+                    switch($reward_cou_data['cou_type'] & COUPON_TYPE){
+                        case FULL_SUBTRACTION:
+                            $dis = intval($reward_cou_data['cou_discount']);
+                            $str = "满{$reward_cou_data['cou_base']}减{$dis}元";
+                            break;
+                        case DISCOUNT:
+                            $str = "消费额{$reward_cou_data['cou_discount']}折优惠券";
+                            break;
+                        case CASH:
+                            $str = "{$reward_cou_data['cou_base']}元代金券";
+                            break;
+                        default:info_to_user("优惠类型初始化失败！");
+                    }
+                    $data[$key]['reward'] = "【优惠券-{$reward_cou_data['cou_title']}】【可分享给{$data[$key]['share_times']}人】---{$str}";
+                }else{
+                    $data[$key]['reward'] = "暂无奖励信息";
+                }
+            }else if($cou_data['reward_type'] == 2){
+                $data[$key]['reward'] = "【可分享给{$data[$key]['share_times']}人】".$cou_data['reward_info'];
+            }else if($cou_data['reward_type'] == 3){
+                $data[$key]['reward'] = "【可分享给{$data[$key]['share_times']}人】暂无奖励信息";
+            }else{
+                $data[$key]['reward'] = "暂无奖励信息";
+            }
+            
+            //init the coupon information
+            switch($cou_data['cou_type'] & COUPON_TYPE){
+                case FULL_SUBTRACTION:
+                    $intdiscount = intval($cou_data['cou_discount']);
+                    $data[$key]['type'] = "满{$cou_data['cou_base']}减{$intdiscount}元";
+                    break;
+                case DISCOUNT:
+                    $data[$key]['type'] = "消费额{$cou_data['cou_discount']}折优惠券";
+                    break;
+                case CASH:
+                    $data[$key]['type'] = "{$cou_data['cou_base']}元代金券";
+                    break;
+                default:info_to_user("优惠类型初始化失败！");
+            }
+            
+            //init the time information
+            switch($cou_data['cou_type'] & TIME_TYPE){
+                case DEADTIME:
+                    $dateobj = date_create($cou_data['cou_start']);
+                    $dateobj1 = date_create($cou_data['cou_end']);
+                    $datastr = date_format($dateobj, "Y-m-d");
+                    $datastr1 = date_format($dateobj1, "Y-m-d");
+                    $data[$key]['expire_date'] = "{$datastr}至{$datastr1}";
+                    if(time() > strtotime($cou_data['cou_end'])){       //disabled
+                        $data[$key]['status'] = "已过期";
+                    }else{
+                        $data[$key]['status'] = "有效"; 
+                    }
+                    break;
+                case DAYS:
+                    $dateobj = date_create($cou_data['cou_start']);
+                    $dateobj1 = date_create($cou_data['cou_end']);
+                    $datastr = date_format($dateobj, "Y-m-d");
+                    $datastr1 = date_format($dateobj1, "Y-m-d");
+                    if($page == "home"){
+                        $data[$key]['expire_date'] = "从获取日起({$cou_data['cou_days']}天有效)";
+                    }else{
+                        $data[$key]['expire_date'] = "{$datastr}至{$datastr1}({$cou_data['cou_days']}天有效)";
+                    }
+                    
+                    $data[$key]['status'] = "有效";
+                    break;
+                default:
+                    info_to_user("有效期初始化失败!");
+            }
+            $list = explode("\n", $cou_data['cou_info']);
+            foreach ($list as $index=>$val){
+                $list[$index] = trim($val);
+            }
+            $data[$key]['intro'] = $list[0];
+            $data[$key]['list_detail'] = $list;
+            
+        }
+
+        return $data;
+    }
+    
+    
+    public function get_coupon_title($cou_id){
+        $title = $this->modulor->coupon_title($cou_id);
+        if(empty($title)){
+            return "";
+        }
+        return $title;
+    }
+    
+    //delete coupon
+    public function delete_coupon($cou_id){
+        if($this->modulor->delete_cou_by_id($cou_id)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
+    //get coupon title data for the option of reward coupon
+    public function init_add_page(){
+        //cou_id,cou_title
+        $title = $this->modulor->get_cou_data("cou_title"); 
+        return $title;
+    }
+
+    //get 
+    public function obtain_cou($share_user,$cou_id,$to_user,$share_times){
+        $err = $this->modulor->insert_share_record($share_user,$cou_id,$to_user,$share_times);
+        if($err == "exist"){
+            info_to_user("您已经领取过了！");
+        }else if($err == "error"){
+            info_to_user("领取失败！");
+        }else if($err == "success"){
+            if(!$this->is_menager($share_user)){            //not menager
+                $this->modulor->set_times($share_user,$cou_id);
+            }
+            info_to_user("领取成功！","success","去查看","/weipro/coupon.php");
+        }
+    }
+    
+    //get share times
+    public function get_share_times($id,$type="coupon",$this_couid=null){
+        if($type == "coupon"){
+            return $this->modulor->get_stimes_of_coupon($id);
+        }else if($type == "user"){
+            return $this->modulor->get_stimes_of_user($id,$this_couid);
+        }
+    }
+    
+    //get share record
+    public function get_share_record($share_id){
+        return $this->modulor->get_share_record_by_id($share_id);
+    }
+    
+    //get share records
+    public function get_share_info($user_id){
+        //share_id,title,user_id
+        //share_id,user_id,cou_id,to_user_id,share_time,status
+        $data = array();
+        $mysql_data = $this->modulor->get_share_records($user_id);
+        $num = count($mysql_data);
+        for($i=0;$i<$num;$i++){
+            $data[$i]['share_id'] = $mysql_data[$i]['share_id'];
+            $data[$i]['title'] = $this->get_coupon_title($mysql_data[$i]['cou_id']);
+            $data[$i]['user_id'] = $mysql_data[$i]['to_user_id'];
+        }
+        return $data;
+
+    }
+    
+    //use coupon
+    public function use_coupon($user_id,$cou_id){
+        $this->modulor->auto_disable_coupon();
+        $note = $this->modulor->module_use_coupon($user_id,$cou_id);
+        if($note == "success"){
+            info_to_user("操作成功！","success","确定");
+        }else if($note == "used"){
+            info_to_user("此优惠券已经被使用过了！");
+        }else if($note == "disabled"){
+            info_to_user("此优惠券已经过期了！");
+        }else{
+            info_to_user("操作失败！");
+        }
+    }
+    
+    public function get_num_of_today_news($user_id){
+        return $this->modulor->module_get_new_share_record($user_id);
+    }
+    
+    public function get_num_of_share_records($user_id){
+        $data =  $this->modulor->get_share_records($user_id);
+        return count($data);
+    }
+
+
+}

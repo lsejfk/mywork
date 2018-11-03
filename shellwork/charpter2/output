@@ -1,0 +1,30 @@
+Script started on Wed 02 May 2018 04:38:18 AM PDT
+]0;michael@ubuntu: ~/learnfile/shellwork/charpter2[01;32mmichael@ubuntu[00m:[01;34m~/learnfile/shellwork/charpter2[00m$ filename=si[Kample.jpg[K[K[K[K[K[K[K[K[K[K"sample.jpg"
+]0;michael@ubuntu: ~/learnfile/shellwork/charpter2[01;32mmichael@ubuntu[00m:[01;34m~/learnfile/shellwork/charpter2[00m$ name-[K=${filename%.*}
+]0;michael@ubuntu: ~/learnfile/shellwork/charpter2[01;32mmichael@ubuntu[00m:[01;34m~/learnfile/shellwork/charpter2[00m$ echo $name
+sample
+]0;michael@ubuntu: ~/learnfile/shellwork/charpter2[01;32mmichael@ubuntu[00m:[01;34m~/learnfile/shellwork/charpter2[00m$ subname=${filename#*.}
+]0;michael@ubuntu: ~/learnfile/shellwork/charpter2[01;32mmichael@ubuntu[00m:[01;34m~/learnfile/shellwork/charpter2[00m$ echo $subname 
+jpg
+]0;michael@ubuntu: ~/learnfile/shellwork/charpter2[01;32mmichael@ubuntu[00m:[01;34m~/learnfile/shellwork/charpter2[00m$ fin[Klename="www.baidu.com"
+]0;michael@ubuntu: ~/learnfile/shellwork/charpter2[01;32mmichael@ubuntu[00m:[01;34m~/learnfile/shellwork/charpter2[00m$ subname=${filename%.[K%.*}
+]0;michael@ubuntu: ~/learnfile/shellwork/charpter2[01;32mmichael@ubuntu[00m:[01;34m~/learnfile/shellwork/charpter2[00m$ echo $subm[Kname 
+www
+]0;michael@ubuntu: ~/learnfile/shellwork/charpter2[01;32mmichael@ubuntu[00m:[01;34m~/learnfile/shellwork/charpter2[00m$ subname=${filename%%.*[K[K[K.*}
+]0;michael@ubuntu: ~/learnfile/shellwork/charpter2[01;32mmichael@ubuntu[00m:[01;34m~/learnfile/shellwork/charpter2[00m$ echo $subname 
+www.baidu
+]0;michael@ubuntu: ~/learnfile/shellwork/charpter2[01;32mmichael@ubuntu[00m:[01;34m~/learnfile/shellwork/charpter2[00m$ subname=${filename#*.}
+]0;michael@ubuntu: ~/learnfile/shellwork/charpter2[01;32mmichael@ubuntu[00m:[01;34m~/learnfile/shellwork/charpter2[00m$ echo $subname
+baidu.com
+]0;michael@ubuntu: ~/learnfile/shellwork/charpter2[01;32mmichael@ubuntu[00m:[01;34m~/learnfile/shellwork/charpter2[00m$ subname={filename##*.}
+]0;michael@ubuntu: ~/learnfile/shellwork/charpter2[01;32mmichael@ubuntu[00m:[01;34m~/learnfile/shellwork/charpter2[00m$ echo subname
+subname
+]0;michael@ubuntu: ~/learnfile/shellwork/charpter2[01;32mmichael@ubuntu[00m:[01;34m~/learnfile/shellwork/charpter2[00m$ echo $subname 
+{filename##*.}
+]0;michael@ubuntu: ~/learnfile/shellwork/charpter2[01;32mmichael@ubuntu[00m:[01;34m~/learnfile/shellwork/charpter2[00m$ subname=${filenam[K[K[K[Kename##*.}
+]0;michael@ubuntu: ~/learnfile/shellwork/charpter2[01;32mmichael@ubuntu[00m:[01;34m~/learnfile/shellwork/charpter2[00m$ echo $subname 
+com
+]0;michael@ubuntu: ~/learnfile/shellwork/charpter2[01;32mmichael@ubuntu[00m:[01;34m~/learnfile/shellwork/charpter2[00m$ exit
+exit
+
+Script done on Wed 02 May 2018 04:44:17 AM PDT

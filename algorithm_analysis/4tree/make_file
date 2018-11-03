@@ -1,0 +1,26 @@
+############
+# makefile #
+############
+
+#target source object
+SOURCE := test4.33.c
+OBJS := test4.33.o
+TARGET := test4.33
+
+#compile and lib parameter
+CC := gcc
+LIBS := -larray_stack -larray_queue
+LDFLAGS := -L/home/michael/local/src
+INCLUDE := -I/home/michael/local/include
+
+#link
+$(TARGET):$(OBJS)
+	$(CC) -o $@ $^ $(LDFLAGS) $(LIBS)
+
+#compile
+$(OBJS):$(SOURCE)
+	$(CC) -g -c $^ $(INCLUDE) -o $@ 
+#clean
+clean:
+	rm *.o
+	rm $(TARGET)

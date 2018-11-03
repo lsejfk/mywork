@@ -1,0 +1,5 @@
+this is parent process
+this is child process
+the end = 89
+before fork
+pid= 9297,glob = 6,var = 88

@@ -1,0 +1,5 @@
+Charpter2 Scalar Data
+1.Turn on warnings:
+	use warnings;
+	#!/usr/bin/perl -w
+	use diagnostics;	//For longer warnings

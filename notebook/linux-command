@@ -1,0 +1,103 @@
+#set the vim editor with nu and autoindent default
+command:
+{vim ~/.vimrc}
+then:
+edit:{set nu
+set autoindent
+}
+
+#paste code in vim editor
+:set paste
+:set nopaste
+
+#gcc compile c++ code
+gcc -g -c test.cpp
+gcc -o test test.o -lstdc++
+
+#centos install pinyin input mothod
+1.sudo yum install ibus-libpinyin
+2.reboot  #restart
+3.ibus restart
+4.open the settings,select religon and language,add the source of chinese and the select the pinyin method
+
+#cancel high light display the matching string
+:noh
+
+#usage of find command
+1.find with filename: find /home -name "*.txt" | find . \( -name "*.txt" -o  -name "*.pdf" \)
+
+2.find with pathname: find /home -path "*local"
+
+3.find with filetype: find /home -type f
+4.find with depth: find /home -maxdepth 3
+5.find with time: find /home -atime -7 -type f #all the files which have been accessed in the last 7 days at /home directory
+6.find with size: find /home -size +10k	#search file larger than 10k
+7.delete what have been found:find . -type f -name "*.txt" -delete
+8.find with exec: find . -type f -user root -exec chown michael {} \;	#find all of files whose owner is root,and change owner into michael
+
+#install chrome on centos:
+	cd /etc/yum.repos.d
+	vim google-chrome.repo
+   [google-chrome]
+   name=google-chrome
+   baseurl=http://dl.google.com/linux/chrome/rpm/stable/x86_64
+   enabled=1
+   gpgcheck=1
+   gpgkey=https://dl.google.com/linux/linux_signing_key.pub
+
+	yum -y install google-chrome-stable --nogpgcheck
+
+#timed execution script
+	crontab -e
+	edit:
+	00 * * * * /usr/bin/php /var/www/html/weipro/script.php
+	minute hour day month week
+
+
+#linux environment
+/etc/profile	#the first file visited after logining,set the environment info for all the user
+/etc/environment	#the second file visited
+~/.profile	#the third file visited,set the user's own shell information
+
+/etc/bashrc	#run when a new bash shell is opened
+~/.bahsrc	#the user's own bash shell information.
+
+#set the path environment
+vim ~/.profile
+export PATH="$PATH:<path>"
+
+
+#add disk
+	fdisk -l	#view all the disk information
+	fdisk /dev/sda	#go to the sda disk
+	#with command prompt,add a new partition
+	reboot or partprobe	#reread the partition information
+	mkfs.xfs -f -i size=512 -l size=128m,lazy-count=1 -d agcount=64 /dev/sda5	#format the file system as xfs type
+	mount /dev/sda5 /home	#mount the partition at specified directory
+	blkid /dev/sda5		#get the UUID of the partition
+	vim /etc/fstab	and edit :UUID=2270f52a-4a3e-4945-a0a0-37ef01e15e46 /home	xfs	default 0 0
+	#mount forever
+
+#find string in a file and replace it
+awk '/string/ {print $1}' filename | xargs -I {} sed -i 's/{}/replacestring/g' filename;
+
+#find the path of apps installed by yum
+	rpm -qa | grep java		#find the package
+	rpm -ql javaxxxxxxx		#show the path
+#in centos,java command is available,but javac is unavailable
+	run yum install java-devel
+
+#install docker
+	yum install docker
+	systemctl start docker	#run docker
+
+#nother app is currently holding the yum lock; waiting for it to exit.
+	rm -f /var/run/yum.pid
+	systemctl restart yum-updatesd.service
+
+#set up a ftp server
+	yum install vsftpd
+	vim /etc/vsftpd/vsftpd.conf
+	systemctl start vsftpd
+#copy something to the clipboard
+	cat filename | xsel -b -i

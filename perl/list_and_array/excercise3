@@ -1,0 +1,5 @@
+#!/usr/bin/perl
+chomp(@lines = <STDIN>);	#chomp the input string
+@lines = sort @lines;
+print "@lines\n";		#print in one line
+print @lines;			#print in seperate line

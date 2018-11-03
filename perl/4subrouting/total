@@ -1,0 +1,51 @@
+#!/usr/bin/perl
+use v5.12;
+use strict;
+
+sub total{
+	my $sum = 0;
+	foreach (@_){
+		$sum += $_;	
+	}
+	$sum;
+}
+
+sub average{
+	if($#_ > 0){
+		&total(@_) / $#_;
+	}else{
+		undef;
+	}
+}
+
+sub above_average{
+	my $avg = &average(@_);
+	my @elem;
+	foreach (@_){
+		if($_ > $avg){
+			push @elem,$_;
+		}
+	}
+	@elem;
+}
+
+my @fred = &above_average(1..10);
+print "\@fred is @fred\n";
+print "(Should be 6 7 8 9 10)\n";
+my @barney = above_average(100,1..10);
+print "\@barney is @barney\n";
+print "(Should be just 100)\n";
+
+sub greet{
+	state $name = 0;
+	if($name == 0){
+		print "Hi $_! You are the first one here!\n";
+		$name = $_;
+	}else{
+		print "Hi $_! $name is also here!\n";
+		$name = $_;
+	}
+}
+
+&greet("Fred");
+&greet("Barney");

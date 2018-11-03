@@ -1,0 +1,26 @@
+#############
+#  Makefile #
+#############
+
+#target
+TARGET := 
+
+#compile and lib parameter
+CC := gcc
+LIBS := 
+LDFLAGS :=
+INCLUDE :=
+
+#link parameter
+LIB := libmytest.so
+
+#link
+$(LIB):<dependencies>
+	$(CC) -shared -o $@ $^
+
+#compile
+mytest.o:mytest.c
+	$(CC) -fPIC -g -c -Wall $^ -o $@
+
+#clean
+	rm *.o

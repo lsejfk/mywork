@@ -1,0 +1,18 @@
+微信网页app数据库表说明：
+用户表：用户手机号	用户等级	用户注册时间	用户性别	用户登录状态	用户登录时间	用户密码
+user:	user_id	user_level  user_rgtime	user_sex user_status	user_lgtime	user_psw
+
+优惠券表：优惠券id	标题		类型		创建时间		有效天数		截止时间		基础金额		折扣		详细信息		等级		奖励类型		奖励id
+coupon:	cou_id		cou_title	cou_type 	cou_start 	cou_days	cou_end		cou_base	cou_discount	cou_info	cou_level	reward_type	reward_id
+
+获取优惠券：用户id 	优惠券id	优惠券状态	获取时间		使用时间		分享码		分享次数		获取的id（分享id，或者是0代表节假日优惠活动）
+get:	  user_id	cou_id	cou_status	get_time	used_time	share_code	share_times	getid
+
+分享：	分享id		用户id	优惠券id	被分享用户id	分享时间		分享状态（默认为0代表已分享，当被分享的人使用此优惠券后代表分享成功，用1来表示）
+share:	share_id	user_id	cou_id	to_user_id	share_time	status
+
+车：	车牌号	用户id	车型		车颜色		用户名
+car:	car_id	user_id	car_type	car_color	user_name
+
+消费：		消费id	车牌号	消费项目	消费金额		使用的优惠券（0表示未使用）	实际支付金额	消费时间		消费说明
+consume:	con_id	car_id	con_pro	con_money	cou_id					money		con_time	con_info

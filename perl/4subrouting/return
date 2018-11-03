@@ -1,0 +1,47 @@
+#!/usr/bin/perl -w
+use v5.12;
+use strict;
+
+sub which_element_is{
+	my($what,@list) = @_;
+	foreach (0..$#list){
+		if($what eq $list[$_]){
+			return $_;
+		}
+	}
+	-1;
+}
+
+my @names = qw(fred barney betty dino wilma pebbles bamm-bamm);
+my $result = &which_element_is("dino",@names);
+print $result;
+print "\n";
+
+sub list_from_fred_to_barney{
+	my($fred,$barney) = @_;
+	if($fred < $barney){
+		$fred..$barney;
+	}else{
+		reverse $barney..$fred;
+	}
+}
+
+my $fred = 11;
+my $barney = 6;
+my @c = &list_from_fred_to_barney($fred,$barney);
+print "@c","\n";
+
+sub running_sum{
+	state $sum = 0;
+	state @numbers;
+
+	foreach my $number (@_){
+		push @numbers,$number;
+		$sum += $number;
+	}
+	print "the sum of (@numbers) is $sum\n";
+}
+
+&running_sum(5,6);
+&running_sum(1..4);
+&running_sum(9);

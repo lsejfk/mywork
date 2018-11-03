@@ -1,0 +1,30 @@
+Script started on Sun 29 Apr 2018 07:23:14 PM PDT
+]0;michael@ubuntu: ~/learnfile/shellwork/charpter2[01;32mmichael@ubuntu[00m:[01;34m~/learnfile/shellwork/charpter2[00m$ cat fil1 f[K[K[Ke1 file2
+This is test in file1
+	hello world 
+        this is space
+
+
+This is test in file1
+
+
+
+
+this is test in file1
+This is a test in file2
+]0;michael@ubuntu: ~/learnfile/shellwork/charpter2[01;32mmichael@ubuntu[00m:[01;34m~/learnfile/shellwork/charpter2[00m$ cat file1 -Tn[K[K[K[K[K[K[K[K[K[K -Tn f[Kfile1
+     1	This is test in file1
+     2	^Ihello world 
+     3	        this is space
+     4	
+     5	
+     6	This is test in file1
+     7	
+     8	
+     9	
+    10	
+    11	this is test in file1
+]0;michael@ubuntu: ~/learnfile/shellwork/charpter2[01;32mmichael@ubuntu[00m:[01;34m~/learnfile/shellwork/charpter2[00m$ exit
+exit
+
+Script done on Sun 29 Apr 2018 07:24:00 PM PDT

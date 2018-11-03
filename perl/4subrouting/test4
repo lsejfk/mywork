@@ -1,0 +1,17 @@
+#!/usr/bin/perl
+use v5.10;
+sub greet{
+	state @names;
+	my $name = shift;
+	push(@names,$name);
+	if(!@names){
+		print "Hi$name! You are the first one here!";
+	}else{
+		print "Hi$name! I've seen:@names";
+	}
+}
+
+greet("Fred");
+greet("Barney");
+greet("Wilma");
+greet("Betty");

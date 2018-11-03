@@ -1,0 +1,11 @@
+Time record:
+	clock_t start,end;
+	start = clock();
+	end = clock();
+	diff = (double)(start - end) / CLOCKS_PER_SEC;
+
+Get time from struct timespec
+	struct tm t;
+	struct timespec ts;
+	char date_time[64];
+	strftime(date_time,sizeof(date_time),"%Y-%m-%d %H:%M:%S",localtime_r(&ts.tv_sec,&t);

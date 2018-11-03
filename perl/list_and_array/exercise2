@@ -1,0 +1,7 @@
+#!/usr/bin/perl
+chomp(@num = <STDIN>);		#read numbers from standard input
+@names = qw(fred betty barney dino wilma pebbles bamm-bamm);
+foreach (@num){
+	print $_;
+	print "-".$names[$_-1]."\n";
+}

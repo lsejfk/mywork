@@ -1,0 +1,7 @@
+For show menu at the top of window,I removed appmenu-qt and appmenu-qt5,
+maybe I can retrive them by:
+	sudo apt-get install appmenu-qt
+	sudo apt-get install appmenu-qt5
+Then I have retrived them.
+
+

@@ -1,0 +1,68 @@
+
+CREATE PROCEDURE update_get_status()
+begin
+	declare coupon_id int;
+   declare coupon_type int; 
+   declare coupon_start datetime; 
+   declare coupon_days int; 
+   declare coupon_end datetime; 
+   declare get_cou_id int;
+   declare get_time datetime; 
+   declare get_status int;  
+   declare thecou_id int;
+ declare token int default 0;
+   declare done int default 0;
+    declare  my_coupon_cursor  CURSOR FOR select cou_id,cou_type,cou_start,cou_days,cou_end from coupon; 
+   declare  my_get_cursor CURSOR FOR select get_time cou_status from get where cou_id=thecou_id;
+   		DECLARE CONTINUE HANDLER FOR NOT FOUND SET done=1;
+
+   OPEN my_coupon_cursor; 
+   repeat  
+ 		fetch my_coupon_cursor into coupon_id,coupon_type,coupon_start,coupon_days,coupon_end; 
+ 		if(!done) then
+	 		set thecou_id=coupon_id;
+	   		if (coupon_type & 192)=128 then 
+	   			if not my_get_cursor%ISOPEN then 
+	   				open my_get_cursor; 
+	   			end if; 
+	   			begin
+	   			DECLARE CONTINUE HANDLER FOR NOT FOUND SET token=1;
+	   			repeat  
+	   				fetch my_get_cursor into get_time,get_status; 
+	   				if(!token) then
+		   				
+		    			if (get_status=0 and DATE(NOW())>coupon_end) then
+		     				update get set get.cou_status=2 where get.cou_id=coupon_id; 
+		     				commit; 
+		     			end if; 
+		     			end if;
+	     			until token
+	     		end repeat;
+	     		end;
+	     		close my_get_cursor;
+	       else  if (coupon_type & 192)=64 then 
+	     		if not my_get_cursor%ISOPEN then
+	      			open my_get_cursor; 
+	      		end if;
+	      		begin
+	      		DECLARE CONTINUE HANDLER FOR NOT FOUND SET token=1;
+	       		repeat  
+	        		fetch my_get_cursor into get_time,get_status;
+	        		if(!token) then
+		         		
+		         		if (get_status=0 and ADDDATE(date(get_time),coupon_days) > CURDATE()) then
+		          			update get set get.cou_status=2 where get.cou_id=coupon_id;
+		           			commit;
+		            	end if; 
+		            end if;
+	            	until token
+	            	end repeat;
+	            	end;
+	            	close my_get_cursor;
+	       end if; 
+	            
+	  end if;
+   until done
+   end repeat;
+
+end ;

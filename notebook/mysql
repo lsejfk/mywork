@@ -1,0 +1,23 @@
+1.Chinese random code appears in importing data into the database:
+	The Address:https://blog.csdn.net/mark_lq/article/details/47173849
+
+#show the table information:
+
+#set the table character set:
+	alert table user character set utf8
+
+
+#create table
+riaDB [weipro]> CREATE TABLE share(
+    -> user_id CHAR(11) NOT NULL,
+    -> cou_id INT NOT NULL,
+    -> cou_status INT NOT NULL,
+    -> cou_times INT NOT NULL,
+    -> share_time DATETIME,
+    -> used_time DATETIME,
+    -> share_code VARCHAR(256) NOT NULL,
+    -> PRIMARY KEY(user_id,cou_id)
+    -> ) DEFAULT CHARSET=utf8 COLLATE utf8_general_ci;
+
+
+

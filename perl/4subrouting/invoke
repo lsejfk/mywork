@@ -1,0 +1,32 @@
+#!/usr/bin/perl
+$n = 0;
+sub margin{
+	$n += 1;
+	print "number $n\n";
+	$n;
+}
+
+&margin;
+&margin;
+print &margin;
+
+sub max{
+	my($a,$b) = @_;
+	if($a > $b){$a}else{$b}
+}
+
+print max(3,5);
+print "\n";
+
+sub max{
+	my($my_var) = shift(@_);
+	foreach (@_){
+		if($_ > $my_var){
+			$my_var = $_;
+		}
+	}
+	$my_var;
+}
+
+print &max(2,45,563,56,999);
+

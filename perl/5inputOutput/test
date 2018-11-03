@@ -1,0 +1,13 @@
+#!/usr/bin/perl
+while (defined($line = <STDIN>)){
+	print "I saw $line";
+}
+
+#foreach (<STDIN>){
+#	print "foreach I saw $_";
+#}
+#
+while(defined($line = <>)){
+	chomp($line);
+	print "It was $line that I saw!\n";
+}

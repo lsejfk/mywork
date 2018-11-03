@@ -1,0 +1,29 @@
+#build a resposity at current directory
+	git init
+	git add *.c
+	git commit -m "initial project version"
+#view current status
+	git status
+#view the exact lines added and removed
+	git diff
+#remove the file
+	git rm filename
+#rename the file
+	git mv thefile newfile
+#view the commit history
+	git log		#-p shows the difference in each commit
+#undo something
+	git commit -m 'initial commit'
+	git add forgotten_file
+	git commit --amend
+#unstaging a staged file
+	git reset HEAD <file>
+#unmodify a modified file
+	git checkout -- <file>
+#create a new branch and switch to it
+	git checkout -b branchname
+#merge the branches to master
+	git checkout master	#switch to master
+	git merge hotfix
+#delete branch
+	git branch -d hotfix

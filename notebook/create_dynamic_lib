@@ -1,0 +1,108 @@
+1.At first,create a share function library:
+	gcc -fPIC -g -c -Wall myprogram.c			//-Wall using for debug which is unnecessary
+	gcc -shared -o libmyprogram.so myprogram.o 		//The object name must be prefixed with lib,followed by
+								//the name of function library
+2.Install the dynamic library:
+	The easy way:copy the building file to /usr/lib,and then rum ldconfig
+		vim /etc/ld.so.conf
+		add:include /path
+		ldconfig
+	If I have no permission to do that,there is an other way:
+		run :ldconfig -n directory_with_shared_libraries		//Build symbolic link
+		set environment variable LD_LIBRARY_PATH:
+			vim ~/.bashrc
+			add:export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/learnfile/qt/word/c_module
+3.Run:
+Edit a header file for the shared library:
+
+#ifndef TEST_H
+#define TEST_H
+#ifdef __cplusplus			//If this is c++ compiler
+extern "C"
+{
+#endif
+int connectMysql();
+#ifdef __cplusplus
+}
+#endif
+#endif
+
+Compile the source file:
+	gcc -g -c test.c
+	gcc -o test test.o -L/path -lmyprogram		//-lmyprogram is going to tell the compiler which share library will be linked
+
+
+----------------------------------------------------------------------------------------
+Load shared libraries into qtcreator:
+	open the .pro file,and add:
+		LIBS += ~/learnfile/qt/word/c_module/libc_program_source.so
+
+
+----------------------------------------------------------------------------------------
+Set program environment:
+1.Set include header file path:
+	Add include path to default system include path:
+		export C_INCLUDE_PATH=<PATH>:$C_INCLUDE_PATH		//This is an one-time opproach.
+		Add export C_INCLUDE_PATH=<PATH>:$C_INCLUDE_PATH to /etc/profile	//Effective for all users
+		Add export C_INCLUDE_PATH=<PATH>:$C_INCLUDE_PATH to /home/.bashrc	//Effective for particular user
+
+2.Link path:
+	Dynamic link library search path:
+		export LD_LIBRARY_PATH=<PATH>:$LD_LIBRARY_PATH
+		ditto.
+	Static link library search path:
+		export LIBRARY_PATH=<PATH>:$LIBRARY_PATH
+		ditto.
+
+--------------------------------------------------------------------------------------
+The generation of dynamic link library,makefile is as follow:
+#source object target
+SOURCE := main.c func.c
+OBJS := main.o func.o
+TARGET := main
+
+#compile and lib parameter
+CC := gcc			//Configuration compiler
+LIBS := -lopencv_core		//Link library
+LDFLAGS := -L<path>		//Link library path
+INCLUDE := -I<PATH>		//Include path
+
+#link parameter
+#AR := ar			//For static link library
+LIB := libfunc.so
+
+#link
+$(LIB):func.o
+	$(CC) -shared -o $@ $^			//$@ means object filename,$^ is all of dependencies
+	#$(AR) -r $@ $^				//For static link library
+
+#compile
+func.o:func.c
+	$(CC) -fPIC -g -c -Wall $^ -o $@
+
+#clean
+clean:
+	rm *.o
+
+-------------------------------------------------------------------------------------
+Using of dynamic link library:
+
+#target
+TARGET := main
+
+#compile and lib parameter
+CC := gcc
+LDFLAGS := -L<PATH>
+LIBS := -lfunc
+INCLUDE := -I<path>
+
+#link
+$(TARGET):main.o
+	$(CC) -o $@ $^ $(LDFLAGS) $(LIBS)
+
+#compile
+main.o:main.c
+	$(CC) $(INCLUDE) -c $^
+
+#clean
+	rm *.o

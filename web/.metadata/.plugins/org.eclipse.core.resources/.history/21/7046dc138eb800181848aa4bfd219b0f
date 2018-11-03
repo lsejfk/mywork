@@ -1,0 +1,191 @@
+<?php
+include_once '/var/www/html/weipro/tools/config.inc.php';
+include_once '/var/www/html/weipro/tools/tools.inc.php';
+include_once '/var/www/html/weipro/view/init_page.class.php';
+
+
+$control = new Control();
+
+if(!isset($_COOKIE['weipro']['id']) || !$control->is_login($_COOKIE['weipro']['id'])){
+    info_to_user("您未登录","info","确定","index.php?page=login");
+}
+
+$show = new InitPage($control,"coupon.php",false,$_COOKIE['weipro']['id']);
+
+?>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>优惠券</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
+    <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm-extend.min.css">
+
+  </head>
+  <body>
+    <div class="page-group">
+
+        <div class="page current-page" id="mytab1">
+            <header class="bar bar-nav">
+                    <h1 class="title">我的优惠券</h1>
+                    <a class="create-actions icon icon-menu pull-right"></a>
+            </header>
+            <nav class="bar bar-tab">
+              <a class="tab-item external active" href="">
+                <span class="icon icon-home"></span>
+                <span class="tab-label">我的优惠券</span>
+              </a>
+              <a class="tab-item external" href="/weipro/share_record.php">
+                <span class="icon icon-me"></span>
+                <span class="tab-label">分享记录</span>
+                <span class="badge">2</span>
+              </a>
+            </nav>
+            
+            	<div class="content">
+                	<div class="buttons-tab">
+                        <a href="#mytab1" class="active button">未使用</a>
+                        <a href="#mytab2" class="button">已使用</a>
+                        <a href="#mytab3" class="button">过期</a>
+                      </div>
+                      <div class="content-block">
+                            <div class="content-block">
+                              <?php 
+                                	echo $show->my_coupon_list("unuse");
+                                	if($show->get_num_of_template("unuse") == 0){
+                                	    echo '<div class="content-block"><p>空空如也</p></div>';
+                                	}
+                            	?>
+                            </div>
+
+                      </div>
+            	
+            	
+            </div>
+        </div>
+        
+        <div class="page" id="mytab2">
+            <header class="bar bar-nav">
+                    <h1 class="title">我的优惠券</h1>
+                    <a class="create-actions icon icon-menu pull-right"></a>
+            </header>
+            <nav class="bar bar-tab">
+              <a class="tab-item external active" href="">
+                <span class="icon icon-home"></span>
+                <span class="tab-label">我的优惠券</span>
+              </a>
+              <a class="tab-item external" href="/weipro/share_record.php">
+                <span class="icon icon-me"></span>
+                <span class="tab-label">分享记录</span>
+                <span class="badge">2</span>
+              </a>
+            </nav>
+            
+            	<div class="content">
+                	<div class="buttons-tab">
+                       <a href="#mytab1" class="tab-link active button">未使用</a>
+                        <a href="#mytab2" class="tab-link button">已使用</a>
+                        <a href="#mytab3" class="tab-link button">过期</a>
+                      </div>
+                      <div class="content-block">
+                            <div class="content-block">
+                               <?php 
+                                	echo $show->my_coupon_list("used");
+                                	if($show->get_num_of_template("used") == 0){
+                                	    echo '<div class="content-block"><p>空空如也</p></div>';
+                                	}
+                            	?>
+                            </div>
+                      </div>
+            	
+            	
+            </div>
+        </div>
+        
+        <div class="page" id="mytab3">
+            <header class="bar bar-nav">
+                    <h1 class="title">我的优惠券</h1>
+                    <a class="create-actions icon icon-menu pull-right"></a>
+            </header>
+            <nav class="bar bar-tab">
+              <a class="tab-item external active" href="">
+                <span class="icon icon-home"></span>
+                <span class="tab-label">我的优惠券</span>
+              </a>
+              <a class="tab-item external" href="/weipro/share_record.php">
+                <span class="icon icon-me"></span>
+                <span class="tab-label">分享记录</span>
+                <span class="badge">2</span>
+              </a>
+            </nav>
+            
+            	<div class="content">
+                	<div class="buttons-tab">
+                        <a href="#mytab1" class="tab-link active button">未使用</a>
+                        <a href="#mytab2" class="tab-link button">已使用</a>
+                        <a href="#mytab3" class="tab-link button">过期</a>
+                      </div>
+                      <div class="content-block">
+                            <div class="content-block">
+                               <?php 
+                                	echo $show->my_coupon_list("disabled");
+                                	if($show->get_num_of_template("disabled") == 0){
+                                	    echo '<div class="content-block"><p>空空如也</p></div>';
+                                	}
+                            	?>
+                            </div>
+                      </div>
+            	
+            	
+            </div>
+        </div>
+        
+        
+      
+        
+        <?php 
+            echo $show->menage_coupon_detail(0,"set");
+        ?>   
+    </div>
+
+	<?php 
+	
+	$menu_js = 
+<<<A
+$(document).on('click','.create-actions', function () {
+      var buttons1 = [
+        {
+          text: '退出登录',
+          bold: true,
+          bg: 'danger',
+          onClick: function() {
+        	  window.location.href="/weipro/view/confirm.php?logout&user_id={$_COOKIE['weipro']['id']}";
+          }
+        }
+       
+      ];
+      var buttons2 = [
+        {
+          text: '取消'
+        }
+      ];
+      var groups = [buttons1, buttons2];
+      $.actions(groups);
+  });
+
+A;
+	?>
+    <script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
+    <script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
+    <script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm-extend.min.js' charset='utf-8'></script>
+	<script type="text/javascript" src="/weipro/myjs/ajax.js"></script>
+	<script type="text/javascript" src="/weipro/myjs/check.js"></script>
+	<script type="text/javascript" ><?php echo $menu_js;?></script>
+  </body>
+</html>

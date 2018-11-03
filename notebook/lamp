@@ -1,0 +1,57 @@
+#install apache mysql php environment
+1.install apache
+	yum install httpd httpd-devel	#install apache
+	systemctl start httpd		#start apache service
+	systemctl enable httpd		#set start service after booting
+
+	#enable 80 port for firewall
+	firewall-cmd --permanent --zone=public --add-service=http
+	firewall-cmd --permanent --zone=public --add-service=https
+	firewall-cmd --reload
+
+	#ensure the 80 port is listening
+	netstat -tulp
+
+	#test in firefox with the public ip address
+2.install mysql
+	yum install mariadb mariadb-server mariadb-libs mariadb-devel
+	rpm -qa | grep maria
+
+	#ensure the mysql service is listening
+	netstat -tulp
+
+	#mysql secure set
+	mysql_secure_installation
+
+	#log into mysql
+	mysql -uroot -p
+3.install php
+	yum -y install php
+	rpm -ql php
+
+	yum install php-mysql	#associate php with mysql
+	rpm -ql php-mysql
+
+	yum install -y php-gd php-ldap php-odbc php-pear php-xml php-xmlrpc php-mbstring php-snmp php-soap curl curl-devel php-bcmath
+	
+	#test php 
+	systemctl restart httpd.service
+	cd /var/www/html
+	vi info.php
+
+
+
+#start mysql service:
+	systemctl restart mariadb.service
+
+#solve the problem of Chinese garbled code
+	#show the current character set
+	show variables like "%char%";
+	vim /etc/my.cnf
+
+	[client]
+	default-character-set=utf8
+	[mysql]
+	default-character-set=utf8
+	[mysqld]
+	character-set-server=utf8

@@ -1,0 +1,12 @@
+Compile:
+gcc -g -c test.c -I/usr/local/include/mysql/include
+Link:
+gcc -o test test.o -L/usr/local/include/mysql/lib -lmysqlclient
+
+If the two steps goes to error,try the follow sentences:
+ln -s /usr/local/include/mysql/lib/lmysqlclient.so /usr/lib 
+
+Using C program Language to connect the MySQL Server,Failed to connect the server.This is the solution's location:
+http://aiezu.com/article/mysql_php_connect_through_socket.html
+
+

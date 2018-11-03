@@ -1,0 +1,14 @@
+1 INPUT "What is you name:"; U$
+2 PRINT "Hello "; U$
+3 INPUT "HOW MANY STARTS DO YOU WANT:"; N
+4 S$ = ""
+5 FOR I = 1 TO N
+6 S$ = S$ + "*"
+7 NEXT I
+8 PRINT S$
+9 INPUT "DO YOU WANT MORE STARS? "; A$
+10 IF LEN(A$) = 0 THEN GOTO 9
+11 A$ = LEFT$(A$,1)
+12 IF A$ = "Y" OR A$ = "Y" THEN GOTO 3
+13 PRINT "GOODBY "; U$
+14 END

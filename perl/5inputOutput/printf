@@ -1,0 +1,19 @@
+#!/usr/bin/perl
+printf "hello world";
+printf "\n";
+printf "\%";
+printf "\n";
+
+printf "%g %g %g\n",5/2,34,10**33;
+printf "%12f\n",6*7+2/3;
+printf "%12.3f\n",6*7+2/3;
+printf "%12.0f\n",6*7+2/3;
+printf "%*s\n",10,"wilma";
+printf "%*.*f\n",6,2,3.1415926;
+printf "%*.*f\n",6,4,3.1415926;
+printf "%*.*f\n",4,2,3.1415926;
+printf "%*.*f\n",6,6,3.1415926;
+printf "%*.*f\n",4,3,3.1415926;
+printf "%g\n",5/0;
+
+
