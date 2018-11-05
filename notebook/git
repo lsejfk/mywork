@@ -45,3 +45,13 @@
 	mkdir project.git
 	cd project.git
 	git init --bare
+#push resposity to the empty reposity from user michael
+	#at michael's computer
+	git remote add origin git@gitserver:/home/git/project.git
+	git push origin master
+#clone from the git server
+	#at other user's computer
+	git clone git@gitserver:/home/git/project.git
+	#do something
+	git push <remote> <branch>
+
