@@ -4,7 +4,10 @@
 int main(int argc,char *argv[]){
 	int sockfd,n,counter;
 	char recvline[MAXLINE + 1];
-	struct sockaddr_in servaddr;
+	struct sockaddr_in servaddr,*locaddr_in;
+	socklen_t len;
+	struct sockaddr localaddr;
+	char buff[MAXLINE];
 
 	if(argc != 2){
 		err_quit("usage:a.out <ip address>");
@@ -22,6 +25,12 @@ int main(int argc,char *argv[]){
 	if(connect(sockfd,(SA *)&servaddr,sizeof(servaddr)) < 0){
 		err_sys("connect error");
 	}
+	len = sizeof(localaddr);
+	if(getsockname(sockfd,&localaddr,&len) < 0){
+		err_sys("getsockname error");
+	}
+	locaddr_in = (struct sockaddr_in *)&localaddr;
+	printf("ip:%s,port:%d\n",inet_ntop(AF_INET,&locaddr_in->sin_addr.s_addr	,buff,sizeof(buff)),ntohs(locaddr_in->sin_port));
 	counter = 0;
 	while((n = read(sockfd,recvline,MAXLINE)) > 0){
 		recvline[n] = '\0';

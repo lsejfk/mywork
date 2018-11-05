@@ -9,7 +9,8 @@
 
 int main(){
 	int listendfd,clfd;
-	struct sockaddr_in servaddr,clienaddr;
+	struct sockaddr_in servaddr,clienaddr,*locaddr_in;
+	struct sockaddr localaddr;
 	char buff[MAXLINE],ipaddr[INET_ADDRSTRLEN + 1];
 	char *ptr;
 	socklen_t len;
@@ -22,14 +23,22 @@ int main(){
 	servaddr.sin_family = AF_INET;
 	servaddr.sin_port = htons(9999);
 	servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+/*
 
 	if(bind(listendfd,(struct sockaddr *)&servaddr,sizeof(servaddr)) < 0){
 		err_sys("bind error");
 	}
+*/
 
 	if(listen(listendfd,LISTENQ) < 0){
 		err_sys("listen error");
 	}
+	len = sizeof(localaddr);
+	if(getsockname(listendfd,&localaddr,&len) < 0){
+		err_sys("getsockname error");
+	}
+	locaddr_in = (struct sockaddr_in *)&localaddr;
+	printf("ip:%s,port:%d\n",inet_ntop(AF_INET,&locaddr_in->sin_addr.s_addr	,buff,sizeof(buff)),ntohs(locaddr_in->sin_port));
 
 	for(;;){
 		len = sizeof(clienaddr);

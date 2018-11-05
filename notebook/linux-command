@@ -94,10 +94,18 @@ awk '/string/ {print $1}' filename | xargs -I {} sed -i 's/{}/replacestring/g' f
 #nother app is currently holding the yum lock; waiting for it to exit.
 	rm -f /var/run/yum.pid
 	systemctl restart yum-updatesd.service
-
+------------------------------------------------------------------------
 #set up a ftp server
+#
+#first :install ftp server
 	yum install vsftpd
 	vim /etc/vsftpd/vsftpd.conf
 	systemctl start vsftpd
+#second:modify the configure file
+	cat /etc/vsftpd/vsftpd.conf | grep -v '^#' #to see the default config
+	vim .../vsftpd.conf
+	#looking for more information in vsftpd.conf for the details of set up 
+	#when upload files or download files,you should always specify the filename instead of the directory
+
 #copy something to the clipboard
 	cat filename | xsel -b -i
