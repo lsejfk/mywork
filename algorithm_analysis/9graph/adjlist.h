@@ -1,6 +1,10 @@
 #ifndef ADJLIST_H
 #define ADJLIST_H
-
+#ifdef INT_MAX
+#define INFINITE INT_MAX
+#else
+#define INFINITE 2147483647
+#endif
 //the vertex data structure
 struct VertexDataType_tag{
 	char *name;	//vertex name
@@ -20,6 +24,7 @@ struct ArcNode_tag{
 	ArcInfoType info;	//the arc information
 };
 typedef struct ArcNode_tag *ArcNode;
+typedef ArcNode ArcPtr;
 
 //the vertex node structure
 struct VNode_tag{
@@ -40,9 +45,32 @@ struct AlGraph_tag{
 };
 typedef struct AlGraph_tag *AlGraph;
 
+//the record table
+struct PathRecordTable_tag{
+	int known;
+	int dist;
+	int path;
+};
+typedef struct PathRecordTable_tag *PREntry;
+struct PRTable_tag{
+	PREntry list;
+	int size;
+	int startindex;
+};
+typedef struct PRTable_tag *PRTable;
+
 
 
 
 AlGraph graph_create(GraphType kind,int vexnum,int arcnum);
+PRTable prt_create(int size,int start);
+void prt_dispose(PRTable T);
+void prt_printThePath(AlGraph G,PRTable T,int start,int des);
+/*
+ArcPtr graph_nextarc(ArcPtr cur);
+int graph_vexnum(AlGraph G);
+int graph_arcnum(AlGraph G);
+GraphType graph_kind(AlGraph G);
+*/
 
 #endif

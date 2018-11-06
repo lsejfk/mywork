@@ -1,5 +1,6 @@
 #include "adjlist.h"
 #include "hashquad.h"
+#include "array_stack.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -54,6 +55,10 @@ static AlGraph createDG(int vexnum,int arcnum){
 	for(i=0;i<vexnum;i++){
 		fgets(name,64,stdin);		//get the vertex name,it must end by newline
 		namelen = strlen(name) - 1;
+		if(namelen == 0){		//remove the newline
+			fgets(name,64,stdin);		//get the vertex name,it must end by newline
+			namelen = strlen(name) - 1;
+		}
 		name[namelen] = '\0';	//remove the newline
 		//insert into hash table H
 		hashtq_insert(name,Legal,i,H);
@@ -70,6 +75,7 @@ static AlGraph createDG(int vexnum,int arcnum){
 		}
 		while((scanf("%d",&adjvex),adjvex != -1)){
 			p->next = make_arcNode(adjvex);		//////////////////
+
 			p = p->next;
 		}
 		/*
@@ -105,6 +111,71 @@ static AlGraph createDG(int vexnum,int arcnum){
 }
 
 
+//create the record table
+PRTable prt_create(int size,int start){
+	PRTable T;
+	int i;
+	T = (struct PRTable_tag *)malloc(sizeof(struct PRTable_tag));
+	if(T == NULL){
+		fprintf(stderr,"malloc failed\n");
+		exit(-1);
+	}
+	T->list = (struct PathRecordTable_tag *)calloc(size,sizeof(struct PathRecordTable_tag));
+	if(T->list == NULL){
+		fprintf(stderr,"calloc failed\n");
+		exit(-1);
+	}
+	for(i=0;i<size;i++){
+		T->list[i].known = 0;
+		if(i == start){
+			T->list[i].dist = 0;
+		}else{
+			T->list[i].dist = INFINITE;
+		}
+		T->list[i].path = -1;
+	}
+	T->size = size;
+	T->startindex = start;
+	return T;
+}
+
+void prt_dispose(PRTable T){
+	if(T){
+		if(T->list){
+			free(T->list);
+		}
+		free(T);
+	}
+}
+
+void prt_printThePath(AlGraph G,PRTable T,int start,int des){
+	int i;
+	Stack S;
+	S = arr_createStack(G->vexnum);
+	if(start < 0 || start >= G->vexnum || des < 0 || des >= G->vexnum){
+		fprintf(stderr,"invalid start or des in prt_printThePath\n");
+		exit(-1);
+	}
+	arr_push(des,S);
+	i = des;
+	while(T->list[i].path != -1 && T->list[i].path != start){
+		arr_push(T->list[i].path,S);
+		i = T->list[i].path;
+	}
+	if(T->list[i].path == -1){
+		printf("%s->INIFITE\n",G->vertices[start].data->name);
+		arr_disposeStack(S);
+		return;
+	}else if(T->list[i].path == start){
+		arr_push(start,S);
+	}
+	while(!arr_isEmpty(S)){
+		i = arr_topAndPop(S);
+		printf("%s->",G->vertices[i].data->name);
+	}
+	printf("\n");
+	arr_disposeStack(S);
+}
 
 
 
@@ -142,7 +213,7 @@ static ArcNode make_arcNode(int adjvex){
 		fprintf(stderr,"malloc failed\n");
 		exit(-1);
 	}
-	p->adjvex = -1;
+	p->adjvex = adjvex;
 	p->next = NULL;
 	p->info = NULL;
 	return p;

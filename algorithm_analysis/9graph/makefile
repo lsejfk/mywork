@@ -1,12 +1,14 @@
 CC = gcc
 OPTION = -g -Wall
-INCLUDES = -I .
-OBJS = main.o hashquad.o adjlist.o
+INCLUDES = -I /home/michael/local/include
+LIBPATH = -L /home/michael/local/src
+LIBS = -larray_stack -larray_queue
+OBJS = unweightminpath.o hashquad.o adjlist.o
 .PHONY:all clean
 
 all:${OBJS}
 	@echo "Building..."
-	${CC} ${OPTION} ${INCLUDES} ${OBJS} -o test
+	${CC} ${OPTION} ${INCLUDES} ${OBJS} -o test $(LIBPATH) $(LIBS)
 %.o:%.c
 	${CC} ${OPTION} -c $*.c ${INCLUDES}
 clean:
