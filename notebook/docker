@@ -1,0 +1,24 @@
+#start docker
+     systemctl start docker
+
+#get image from registry
+     docker pull ubuntu:14.04
+#list the images at local
+     docker images ls
+#add tag for exist images
+     docker tag ubuntu:latest myubuntu:latest
+#list the details of information for images
+     docker inspect ubuntu:14.04
+#search images
+     docker search nginx
+#list all of the container in local
+     docker ps -a
+#delete images
+     docker rm <container id> #We should first delete container belongs to the image
+     docker rmi myubuntu:latest
+#commit
+     docker commit -m "add a new file" -a "michael" <id or name> <new name>
+#save images into files
+     docker save -o ubuntu.14.tar ubuntu:14.04
+#load images from files
+     docker load --input ubuntu.14.tar

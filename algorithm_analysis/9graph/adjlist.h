@@ -5,15 +5,20 @@
 #else
 #define INFINITE 2147483647
 #endif
+struct ArcNode_tag;
+
 //the vertex data structure
 struct VertexDataType_tag{
 	char *name;	//vertex name
+     struct ArcNode_tag *last;
+	int flag;
 };
 typedef struct VertexDataType_tag *VertexType;
 //
 //the arc information structure
 struct ArcInfo_tag{
 	int weight;	
+     int arcid;
 };
 typedef struct ArcInfo_tag *ArcInfoType;
 
@@ -33,7 +38,7 @@ struct VNode_tag{
 };
 typedef struct VNode_tag *VNodeList;
 
-enum GraphType_enum {DG,DN,UDG,UDN};
+enum GraphType_enum {DG,DGW,DN,UDG,UDGW,UDN};
 typedef enum GraphType_enum GraphType;
 
 //the graph structure
@@ -63,9 +68,11 @@ typedef struct PRTable_tag *PRTable;
 
 
 AlGraph graph_create(GraphType kind,int vexnum,int arcnum);
+void graph_dispose(AlGraph G);
 PRTable prt_create(int size,int start);
 void prt_dispose(PRTable T);
 void prt_printThePath(AlGraph G,PRTable T,int start,int des);
+void prt_printtab(AlGraph G,PRTable T);
 /*
 ArcPtr graph_nextarc(ArcPtr cur);
 int graph_vexnum(AlGraph G);

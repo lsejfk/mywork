@@ -27,5 +27,6 @@ HashEntryElemType hashtq_retrieve(int p,HashTQ H);
 HashTQ hashtq_rehash(HashTQ H);
 enum KindOfEntry hashtq_getstatus(int pos,HashTQ H);
 int hashtq_retrieveIndex(HashEntryElemType key,HashTQ H);
+int nextprime(int the);
 
 #endif
