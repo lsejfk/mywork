@@ -55,3 +55,7 @@
 	#do something
 	git push <remote> <branch>
 
+########################333
+#when I upload to the github,it print that the remote resposity has something that I do not have in local
+#then I do the command:
+	git pull github_mywork master	#github_mywork is the remote reposity,master is the remote branch

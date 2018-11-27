@@ -3,7 +3,7 @@ OPTION = -g -Wall
 INCLUDES = -I /home/michael/local/include
 LIBPATH = -L /home/michael/local/src
 LIBS = -larray_stack -larray_queue
-OBJS = unweightminpath.o hashquad.o adjlist.o
+OBJS = test9.21.o hashquad.o adjlist.o
 .PHONY:all clean
 
 all:${OBJS}

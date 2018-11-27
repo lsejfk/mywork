@@ -109,3 +109,17 @@ awk '/string/ {print $1}' filename | xargs -I {} sed -i 's/{}/replacestring/g' f
 
 #copy something to the clipboard
 	cat filename | xsel -b -i
+
+#Install docker on centos
+     sudo yum install -y yum-utils device-mapper-persistent-data lvm2
+     #install using repository
+     sudo yum-config-manager --add-repo \
+          https://download.docker.com/linux/centos/docker-ce.repo
+     #enable repository
+     sudo yum-config-manager --enable docker-ce-edge
+     sudo yum-config-manager --enable docker-ce-test
+     #install docker
+     sudo yum install docker-ce
+     #start docker
+     sudo systemctl start docker
+     sudo docker run hello-world

@@ -19,5 +19,13 @@ riaDB [weipro]> CREATE TABLE share(
     -> PRIMARY KEY(user_id,cou_id)
     -> ) DEFAULT CHARSET=utf8 COLLATE utf8_general_ci;
 
+#use mysqldump to backup the mysql
+	mysqldump --databases test > dump.sql	#run this command at shell,test is the database I want to dump
 
+##############33333
+#by default,mysql set up to listen only localhost for connection,so I have
+#to edit the configure file /etc/mysql/mysql.conf.d/mysqld.cnf. and find the "bind",and delete the line
+#
+#If it shows access deny,it means you have lower permission ,then I can run:
+	grant all privileges on *.* to root@'118.25.128.187' identified by 'password';
 
